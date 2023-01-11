@@ -10,9 +10,9 @@ namespace ParkingLotSimulation
     {
         public string VehicleNumber;
         public string SlotNumber;
-        public string InTime;
-        public string OutTime;
-        public ParkingTicket(string vehicleNumber, string slotNumber, string inTime, string outTime)
+        public DateTime InTime;
+        public DateTime OutTime;
+        public ParkingTicket(string vehicleNumber, string slotNumber, DateTime inTime, DateTime outTime)
         {
             this.VehicleNumber = vehicleNumber;
             this.SlotNumber = slotNumber;
@@ -40,8 +40,6 @@ namespace ParkingLotSimulation
             Console.WriteLine("In-Time: " + InTime);
             Console.WriteLine("Out-Time: " + OutTime);
             Console.WriteLine("\n");
-            //Console.WriteLine("Token Issued!");
-            //Console.WriteLine("\n");
         }
 
     }

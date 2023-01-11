@@ -75,9 +75,8 @@ internal class Program
                                 string vehicleNumber = Console.ReadLine();
                                 int slot = p.slotNumber(twoWheelersList, 0);
                                 string slotNumber = "TW-" + Convert.ToString(slot);
-                                DateTime inTime = DateTime.Now;
-                                DateTime outTime = DateTime.Now.AddHours(1);
-                                ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slotNumber, inTime, outTime);
+                                string inTime = Convert.ToString(DateTime.Now);
+                                ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slotNumber, inTime, "00-00-00 00:00:00");
                                 twoWheelersList[slot] = 1;
                                 twoWheelerObjectList[slot] = newParkingTicket;
                                 newParkingTicket.IssueTicket();
@@ -96,9 +95,9 @@ internal class Program
                                 string vehicleNumber = Console.ReadLine();
                                 int slot = p.slotNumber(fourWheelersList, 0);
                                 string slotNumber = "FW-" + Convert.ToString(slot);
-                                DateTime inTime = DateTime.Now;
+                                string inTime = Convert.ToString(DateTime.Now);
                                 DateTime outTime = DateTime.Now.AddHours(1);
-                                ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slotNumber, inTime, outTime);
+                                ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slotNumber, inTime, "00-00-00 00:00:00");
                                 fourWheelersList[slot] = 1;
                                 fourWheelerObjectList[slot] = newParkingTicket;
                                 newParkingTicket.IssueTicket();
@@ -117,9 +116,8 @@ internal class Program
                                 string vehicleNumber = Console.ReadLine();
                                 int slot = p.slotNumber(heavyVehicleList, 0);
                                 string slotNumber = "HV-" + Convert.ToString(slot);
-                                DateTime inTime = DateTime.Now;
-                                DateTime outTime = DateTime.Now.AddHours(1);
-                                ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slotNumber, inTime, outTime);
+                                string inTime = Convert.ToString(DateTime.Now);
+                                ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slotNumber, inTime, "00-00-00 00:00:00");
                                 heavyVehicleList[slot] = 1;
                                 heavyVehicleObjectList[slot] = newParkingTicket;
                                 newParkingTicket.IssueTicket();
@@ -140,7 +138,8 @@ internal class Program
                 case 2:
                     if (p.numberOfVacancies(twoWheelersList) == twoWheelerSlots && p.numberOfVacancies(fourWheelersList) == fourWheelerSlots && p.numberOfVacancies(heavyVehicleList) == heavyVehicleSlots)
                     {
-                        Console.WriteLine("No Vehicles to Unpark!");
+                        Console.WriteLine("\n No Vehicles to Unpark!");
+                        Console.WriteLine("\n");
                     }
                     else
                     {
@@ -149,34 +148,56 @@ internal class Program
 
                         if (unParkVehicle.Substring(0, 2) == "TW")
                         {
-                            int slot = Convert.ToInt32(unParkVehicle.Substring(3));
-                            twoWheelersList[slot] = 0;
-                            twoWheelerObjectList[slot].OutTime = DateTime.Now;
-                            Console.WriteLine("Vehicle Unparked! Thank You!");
-                            Console.WriteLine("\n");
+                            try
+                            {
+                                int slot = Convert.ToInt32(unParkVehicle.Substring(3));
+                                twoWheelersList[slot] = 0;
+                                twoWheelerObjectList[slot].OutTime = Convert.ToString(DateTime.Now);
+                                twoWheelerObjectList[slot].ReturnTicket();
+                                Console.WriteLine("Vehicle Unparked! Thank You!");
+                                Console.WriteLine("\n");
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine("Sorry! No such Slot!\n");
+                            }
                         }
 
                         else if (unParkVehicle.Substring(0, 2) == "FW")
                         {
-                            int slot = Convert.ToInt32(unParkVehicle.Substring(3));
-                            fourWheelersList[slot] = 0;
-                            fourWheelerObjectList[slot].OutTime = DateTime.Now;
-                            Console.WriteLine("Vehicle Unparked! Thank You!");
-                            Console.WriteLine("\n");
+                            try
+                            {
+                                int slot = Convert.ToInt32(unParkVehicle.Substring(3));
+                                fourWheelersList[slot] = 0;
+                                fourWheelerObjectList[slot].OutTime = Convert.ToString(DateTime.Now);
+                                Console.WriteLine("Vehicle Unparked! Thank You!");
+                                Console.WriteLine("\n");
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine("Sorry! No such Slot!\n");
+                            }
                         }
 
                         else if (unParkVehicle.Substring(0, 2) == "HV")
                         {
-                            int slot = Convert.ToInt32(unParkVehicle.Substring(3));
-                            heavyVehicleList[slot] = 0;
-                            heavyVehicleObjectList[slot].OutTime = DateTime.Now;
-                            Console.WriteLine("Vehicle Unparked! Thank You!");
-                            Console.WriteLine("\n");
+                            try
+                            {
+                                int slot = Convert.ToInt32(unParkVehicle.Substring(3));
+                                heavyVehicleList[slot] = 0;
+                                heavyVehicleObjectList[slot].OutTime = Convert.ToString(DateTime.Now);
+                                Console.WriteLine("Vehicle Unparked! Thank You!");
+                                Console.WriteLine("\n");
+                            }
+                            catch (Exception)
+                            {
+                                Console.WriteLine("Sorry! No such Slot!\n");
+                            }
                         }
 
                         else
                         {
-                            Console.WriteLine("No Such Vehicle Found!");
+                            Console.WriteLine("\n No Such Vehicle Found! \n");
                         }
                     }
 

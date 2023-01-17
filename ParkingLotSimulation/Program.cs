@@ -1,9 +1,10 @@
 ﻿using Microsoft.VisualBasic;
-using ParkingLotSimulation;
+using ParkingLotSimulation.Modals;
+using ParkingLotSimulation.Services;
 
 internal class Program
 {
-    int numberOfVacancies(int[] arr)
+    public int numberOfVacancies(int[] arr)
     {
         int ans = 0;
         for (int i = 0; i < arr.Length; i++)
@@ -16,7 +17,7 @@ internal class Program
         return ans;
     }
 
-    int slotNumber(int[] arr, int x)
+    public int slotNumber(int[] arr, int x)
     {
         int idx;
         idx = Array.FindIndex(arr, i => i == x);
@@ -33,22 +34,7 @@ internal class Program
         Console.WriteLine("Enter slots for heavy vehicle parking:");
         int heavyVehicleSlots = Convert.ToInt32(Console.ReadLine());
 
-        ParkingLot parkingLot = new ParkingLot(twoWheelerSlots, fourWheelerSlots, heavyVehicleSlots);
-
-        int[] twoWheelersList = new int[twoWheelerSlots];
-        ParkingTicket[] twoWheelerObjectList = new ParkingTicket[twoWheelerSlots];
-        int[] fourWheelersList = new int[fourWheelerSlots];
-        ParkingTicket[] fourWheelerObjectList = new ParkingTicket[fourWheelerSlots];
-        int[] heavyVehicleList = new int[heavyVehicleSlots];
-        ParkingTicket[] heavyVehicleObjectList = new ParkingTicket[heavyVehicleSlots];
-
-        Console.WriteLine("\n");
-        Console.WriteLine("----------------- Parking Lot ------------------ \n");
-        Console.WriteLine("Two Wheeler Slots: " + twoWheelerSlots);
-        Console.WriteLine("Four Wheeler Slots: " + fourWheelerSlots);
-        Console.WriteLine("Heavy Vehicle Slots: " + heavyVehicleSlots);
-        Console.WriteLine("\n"); 
-
+        ParkingLot parkingLot = new ParkingLot(twoWheelerSlots, fourWheelerSlots, heavyVehicleSlots); 
 
         bool flag = true;
         while (flag)
@@ -66,79 +52,63 @@ internal class Program
                     Console.WriteLine("2 => Four-Wheeler");
                     Console.WriteLine("3 => Heavy Vehicle");
                     int x = Convert.ToInt32(Console.ReadLine());
+
+                    ParkUnparkVehicle park = new ParkUnparkVehicle();
+
                     switch (x)
                     {
                         case 1:
-                            if (p.numberOfVacancies(twoWheelersList) != 0)
+                            if (p.numberOfVacancies(parkingLot.TwoWheelersList) != 0)
                             {
-                                Console.WriteLine("Enter Vehicle Number: ");
-                                string vehicleNumber = Console.ReadLine();
-                                int slot = p.slotNumber(twoWheelersList, 0);
+                                int slot = p.slotNumber(parkingLot.TwoWheelersList, 0);
                                 string slotNumber = "TW-" + Convert.ToString(slot);
-                                DateTime inTime = DateTime.Now;
-                                DateTime outTime = new DateTime();
-                                ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slotNumber, inTime, outTime);
-                                twoWheelersList[slot] = 1;
-                                twoWheelerObjectList[slot] = newParkingTicket;
-                                newParkingTicket.IssueTicket();
+                                park.Park(parkingLot.TwoWheelersList, parkingLot.TwoWheelerObjectList, slotNumber, slot);
                             }
                             else
                             {
-                                Console.WriteLine("\n Sorry! Parking is full!");
-                                Console.WriteLine("\n");
+                                park.ParkingFull();
                             }
                             break;
 
                         case 2:
-                            if (p.numberOfVacancies(fourWheelersList) != 0)
+                            if (p.numberOfVacancies(parkingLot.FourWheelersList) != 0)
                             {
-                                Console.WriteLine("Enter Vehicle Number: ");
-                                string vehicleNumber = Console.ReadLine();
-                                int slot = p.slotNumber(fourWheelersList, 0);
+                                int slot = p.slotNumber(parkingLot.FourWheelersList, 0);
                                 string slotNumber = "FW-" + Convert.ToString(slot);
-                                DateTime inTime = DateTime.Now;
-                                DateTime outTime = new DateTime();
-                                ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slotNumber, inTime, outTime);
-                                fourWheelersList[slot] = 1;
-                                fourWheelerObjectList[slot] = newParkingTicket;
-                                newParkingTicket.IssueTicket();
+                                park.Park(parkingLot.FourWheelersList, parkingLot.FourWheelerObjectList, slotNumber, slot);
                             }
                             else
                             {
-                                Console.WriteLine("\n Sorry! Parking is full!");
-                                Console.WriteLine("\n");
+                                park.ParkingFull();
                             }
                             break;
 
                         case 3:
-                            if (p.numberOfVacancies(heavyVehicleList) != 0)
+                            if (p.numberOfVacancies(parkingLot.HeavyVehicleList) != 0)
                             {
-                                Console.WriteLine("Enter Vehicle Number: ");
-                                string vehicleNumber = Console.ReadLine();
-                                int slot = p.slotNumber(heavyVehicleList, 0);
+                                int slot = p.slotNumber(parkingLot.HeavyVehicleList, 0);
                                 string slotNumber = "HV-" + Convert.ToString(slot);
-                                DateTime inTime = DateTime.Now;
-                                DateTime outTime = new DateTime();
-                                ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slotNumber, inTime, outTime);
-                                heavyVehicleList[slot] = 1;
-                                heavyVehicleObjectList[slot] = newParkingTicket;
-                                newParkingTicket.IssueTicket();
+                                park.Park(parkingLot.HeavyVehicleList, parkingLot.HeavyVehicleObjectList, slotNumber, slot);
                             }
                             else
                             {
-                                Console.WriteLine("\n Sorry! Parking is full!");
-                                Console.WriteLine("\n");
+                                park.ParkingFull();
                             }
                             break;
 
                         default:
                             Console.WriteLine("Invalid Input");
+
                             break;
                     }
+
                     break;
 
                 case 2:
-                    if (p.numberOfVacancies(twoWheelersList) == twoWheelerSlots && p.numberOfVacancies(fourWheelersList) == fourWheelerSlots && p.numberOfVacancies(heavyVehicleList) == heavyVehicleSlots)
+
+                    ParkUnparkVehicle unpark = new ParkUnparkVehicle();
+
+                    if (p.numberOfVacancies(parkingLot.TwoWheelersList) == twoWheelerSlots && p.numberOfVacancies(parkingLot.FourWheelersList) == fourWheelerSlots && p.numberOfVacancies(parkingLot.HeavyVehicleList) == heavyVehicleSlots)
                     {
                         Console.WriteLine("\n No Vehicles to Unpark!");
                         Console.WriteLine("\n");
@@ -153,11 +123,7 @@ internal class Program
                             try
                             {
                                 int slot = Convert.ToInt32(unParkVehicle.Substring(3));
-                                twoWheelersList[slot] = 0;
-                                twoWheelerObjectList[slot].OutTime = DateTime.Now;
-                                twoWheelerObjectList[slot].ReturnTicket();
-                                Console.WriteLine("Vehicle Unparked! Thank You!");
-                                Console.WriteLine("\n");
+                                unpark.Unpark(parkingLot.TwoWheelersList, parkingLot.TwoWheelerObjectList, slot);
                             }
                             catch (Exception)
                             {
@@ -170,11 +136,7 @@ internal class Program
                             try
                             {
                                 int slot = Convert.ToInt32(unParkVehicle.Substring(3));
-                                fourWheelersList[slot] = 0;
-                                fourWheelerObjectList[slot].OutTime = DateTime.Now;
-                                twoWheelerObjectList[slot].ReturnTicket();
-                                Console.WriteLine("Vehicle Unparked! Thank You!");
-                                Console.WriteLine("\n");
+                                unpark.Unpark(parkingLot.FourWheelersList, parkingLot.FourWheelerObjectList, slot);
                             }
                             catch (Exception)
                             {
@@ -187,11 +149,7 @@ internal class Program
                             try
                             {
                                 int slot = Convert.ToInt32(unParkVehicle.Substring(3));
-                                heavyVehicleList[slot] = 0;
-                                heavyVehicleObjectList[slot].OutTime = DateTime.Now;
-                                twoWheelerObjectList[slot].ReturnTicket();
-                                Console.WriteLine("Vehicle Unparked! Thank You!");
-                                Console.WriteLine("\n");
+                                unpark.Unpark(parkingLot.HeavyVehicleList, parkingLot.HeavyVehicleObjectList, slot);
                             }
                             catch (Exception)
                             {
@@ -208,21 +166,19 @@ internal class Program
                     break;
 
                 case 3:
-                    Console.WriteLine("\n");
-                    Console.WriteLine("----------------- Parking Lot ------------------");
-                    Console.WriteLine("\t\t    Free Slots \t Occupied Slots");
-                    Console.WriteLine("Two Wheelers: \t\t" + p.numberOfVacancies(twoWheelersList) + "\t\t" + (twoWheelerSlots - p.numberOfVacancies(twoWheelersList)));
-                    Console.WriteLine("Four Wheelers: \t\t" + p.numberOfVacancies(fourWheelersList) + "\t\t" + (fourWheelerSlots - p.numberOfVacancies(fourWheelersList)));
-                    Console.WriteLine("Heavy Vehicles: \t" + p.numberOfVacancies(heavyVehicleList) + "\t\t" + (heavyVehicleSlots - p.numberOfVacancies(heavyVehicleList)));
-                    Console.WriteLine("\n");
+                    ShowOccupancyDetails details = new ShowOccupancyDetails();
+                    details.ShowDetails(parkingLot, p);
+
                     break;
 
                 case 4:
                     flag = false;
+
                     break;
 
                 default:
                     Console.WriteLine("Invalid");
+
                     break;
             }
 

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ParkingLotSimulation.Modals
+﻿namespace ParkingLotSimulation.Models
 {
-    internal class ParkingLot
+    public class ParkingLot
     {
         public int TwoWheelerSlots;
         public int FourWheelerSlots;
@@ -28,13 +22,6 @@ namespace ParkingLotSimulation.Modals
             this.TwoWheelerObjectList = new ParkingTicket[TwoWheelerSlots];
             this.FourWheelerObjectList = new ParkingTicket[FourWheelerSlots];
             this.HeavyVehicleObjectList = new ParkingTicket[HeavyVehicleSlots];
-
-            Console.WriteLine("\n");
-            Console.WriteLine("----------------- Parking Lot ------------------ \n");
-            Console.WriteLine("Two Wheeler Slots: " + this.TwoWheelerSlots); ;
-            Console.WriteLine("Four Wheeler Slots: " + this.FourWheelerSlots);
-            Console.WriteLine("Heavy Vehicle Slots: " + this.HeavyVehicleSlots);
-            Console.WriteLine("\n");
         }
 
     }

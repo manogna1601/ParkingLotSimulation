@@ -1,31 +1,21 @@
-﻿using ParkingLotSimulation.Modals;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ParkingLotSimulation.Interfaces;
+using ParkingLotSimulation.Models;
 
 namespace ParkingLotSimulation.Services
 {
-    internal class ParkUnparkVehicle
+    public class ParkUnparkVehicle : IParkUnparkVehicle
     {
-        public int slotNumber(int[] arr, int x)
-        {
-            int idx;
-            idx = Array.FindIndex(arr, i => i == x);
-            return idx;
-        }
-        public void Park(int[] list, ParkingTicket[] objectList, string slotNumber, int slot)
+        public void Park(int[] list, ParkingTicket[] objectList, int slot)
         {
             Console.WriteLine("Enter Vehicle Number: ");
             string vehicleNumber = Console.ReadLine();
             DateTime inTime = DateTime.Now;
             DateTime outTime = new DateTime();
-            ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slotNumber, inTime, outTime);
+            ParkingTicket newParkingTicket = new ParkingTicket(vehicleNumber, slot, inTime, outTime);
             list[slot] = 1;
             objectList[slot] = newParkingTicket;
-            ParkingTicketService s = new ParkingTicketService();
-            s.IssueTicket(newParkingTicket);
+            Program.IssueTicket(newParkingTicket);
+          
         }
 
         public void ParkingFull()
@@ -38,8 +28,7 @@ namespace ParkingLotSimulation.Services
         {
             list[slot] = 0;
             objectList[slot].OutTime = DateTime.Now;
-            ParkingTicketService s = new ParkingTicketService();
-            s.ReturnTicket(objectList[slot]);
+            Program.ReturnTicket(objectList[slot]);
         }
     }
 }

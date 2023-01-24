@@ -5,23 +5,62 @@
         public int TwoWheelerSlots;
         public int FourWheelerSlots;
         public int HeavyVehicleSlots;
-        public int[] TwoWheelersList;
-        public int[] FourWheelersList;
-        public int[] HeavyVehicleList;
-        public ParkingTicket[] TwoWheelerObjectList;
-        public ParkingTicket[] FourWheelerObjectList;
-        public ParkingTicket[] HeavyVehicleObjectList;
+        public List<bool> TwoWheelersList;
+        public List<bool> FourWheelersList;
+        public List<bool> HeavyVehicleList;
+        public List<ParkingTicket> TwoWheelerObjectList;
+        public List<ParkingTicket> FourWheelerObjectList;
+        public List<ParkingTicket> HeavyVehicleObjectList;
         public ParkingLot(int twoWheelerSlots, int fourWheelerSlots, int heavyVehicleSlots)
         {
             this.TwoWheelerSlots = twoWheelerSlots;
             this.FourWheelerSlots = fourWheelerSlots;
             this.HeavyVehicleSlots = heavyVehicleSlots;
-            this.TwoWheelersList = new int[TwoWheelerSlots];
-            this.FourWheelersList = new int[FourWheelerSlots];
-            this.HeavyVehicleList = new int[HeavyVehicleSlots];
-            this.TwoWheelerObjectList = new ParkingTicket[TwoWheelerSlots];
-            this.FourWheelerObjectList = new ParkingTicket[FourWheelerSlots];
-            this.HeavyVehicleObjectList = new ParkingTicket[HeavyVehicleSlots];
+            this.TwoWheelersList = new List<bool>(TwoWheelerSlots);
+            this.FourWheelersList = new List<bool>(FourWheelerSlots);
+            this.HeavyVehicleList = new List<bool>(HeavyVehicleSlots);
+            this.TwoWheelerObjectList = new List<ParkingTicket>(TwoWheelerSlots);
+            this.FourWheelerObjectList = new List<ParkingTicket>(FourWheelerSlots);
+            this.HeavyVehicleObjectList = new List<ParkingTicket>(HeavyVehicleSlots);
+
+            for (int i = 0; i < TwoWheelerSlots; i++)
+            {
+                TwoWheelersList.Add(false);
+            }
+
+            for (int i = 0; i < FourWheelerSlots; i++)
+            {
+                FourWheelersList.Add(false);
+            }
+            for (int i = 0; i < HeavyVehicleSlots; i++)
+            {
+                HeavyVehicleList.Add(false);
+            }
+
+            ParkingTicket dummyTicket = new ParkingTicket
+            {
+                VehicleNumber = "",
+                SlotNumber = -1,
+                InTime = new DateTime(),
+                OutTime = new DateTime()
+            };
+
+            for (int i = 0; i < TwoWheelerSlots; i++)
+            {
+                TwoWheelerObjectList.Add(dummyTicket);
+            }
+
+            for (int i = 0; i < FourWheelerSlots; i++)
+            {
+                FourWheelerObjectList.Add(dummyTicket);
+            }
+
+            for (int i = 0; i < HeavyVehicleSlots; i++)
+            {
+                HeavyVehicleObjectList.Add(dummyTicket);
+            }
+
+
         }
 
     }

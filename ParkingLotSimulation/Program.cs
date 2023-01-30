@@ -2,6 +2,7 @@
 using ParkingLotSimulation;
 using ParkingLotSimulation.Models;
 using ParkingLotSimulation.Services;
+using System.Text.Json.Serialization;
 
 public class Program
 {
@@ -12,6 +13,7 @@ public class Program
     static Injector _injector = new Injector(_parkUnparkVehicle, _showOccupancyDetails, _helperService);
     private static void Main(string[] args)
     {
+        Console.WriteLine("------------- Initialize your Parking Lot ------------");
         Console.WriteLine("Enter slots for two-wheeler parking:");
         int twoWheelerSlots = Convert.ToInt32(Console.ReadLine());
         Console.WriteLine("Enter slots for four-wheeler parking:");
@@ -28,6 +30,8 @@ public class Program
         Console.WriteLine("Four Wheeler Slots: " + fourWheelerSlots);
         Console.WriteLine("Heavy Vehicle Slots: " + heavyVehicleSlots);
         Console.WriteLine("\n");
+
+        //_injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
 
         bool flag = true;
         while (flag)
@@ -51,16 +55,36 @@ public class Program
 
                         try
                         {
-                            int x = Convert.ToInt32(Console.ReadLine());
+                            int park = Convert.ToInt32(Console.ReadLine());
 
-                            switch (x)
+                            switch (park)
                             {
                                 case 1:
                                     if (_injector.numberOfVacancies(parkingLot.TwoWheelersList) != 0)
                                     {
                                         int slot = _injector.slotNumber(parkingLot.TwoWheelersList, false);
+                                        //string slotString = "TW-" + Convert.ToString(slot);
                                         _injector.Park(parkingLot.TwoWheelersList, parkingLot.TwoWheelerObjectList, slot);
-                                        _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                        //_injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+
+
+                                        /*string filename = "Details.json";
+                                        string x = File.ReadAllText(filename);
+                                        Json json = JsonConvert.DeserializeObject<Json>(x);
+                                        Console.WriteLine(json.TwoWheelers);*/
+
+                                        /*string filename = "Details.json";
+                                        string x = File.ReadAllText(filename);
+                                        Json y = JsonConvert.DeserializeObject<Json>(x);
+                                        Console.WriteLine(y);
+                                        y.TwoWheelers[slot]=
+                                        JsonConvert.SerializeObject(y);*/
+                                        
+
+                                    }
+                                    else if(twoWheelerSlots == 0)
+                                    {
+                                        Console.WriteLine("\nNo Two Wheeler slots!\n");
                                     }
                                     else
                                     {
@@ -72,8 +96,13 @@ public class Program
                                     if (_injector.numberOfVacancies(parkingLot.FourWheelersList) != 0)
                                     {
                                         int slot = _injector.slotNumber(parkingLot.FourWheelersList, false);
+                                        //string slotString = "FW-" + Convert.ToString(slot);
                                         _injector.Park(parkingLot.FourWheelersList, parkingLot.FourWheelerObjectList, slot);
                                         _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                    }
+                                    else if (fourWheelerSlots == 0)
+                                    {
+                                        Console.WriteLine("\nNo Four Wheeler slots!\n");
                                     }
                                     else
                                     {
@@ -85,8 +114,13 @@ public class Program
                                     if (_injector.numberOfVacancies(parkingLot.HeavyVehicleList) != 0)
                                     {
                                         int slot = _injector.slotNumber(parkingLot.HeavyVehicleList, false);
+                                        //string slotString = "HV-" + Convert.ToString(slot);
                                         _injector.Park(parkingLot.HeavyVehicleList, parkingLot.HeavyVehicleObjectList, slot);
                                         _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                    }
+                                    else if (heavyVehicleSlots == 0)
+                                    {
+                                        Console.WriteLine("\nNo Heavy Vehicle slots!\n");
                                     }
                                     else
                                     {
@@ -125,68 +159,89 @@ public class Program
                                 switch (unparkResponse)
                                 {
                                     case 1:
-                                        if (_injector.numberOfVacancies(parkingLot.TwoWheelersList) == twoWheelerSlots)
+                                        if (twoWheelerSlots == 0)
                                         {
-                                            Console.WriteLine("\n No Vehicles to Unpark!");
-                                            Console.WriteLine("\n");
+                                            Console.WriteLine("\nNo Two Wheeler slots!\n");
                                         }
                                         else
                                         {
-                                            Console.WriteLine("Enter Slot Number:");
-                                            int unparkSlot = Convert.ToInt32(Console.ReadLine());
-                                            try
+                                            if (_injector.numberOfVacancies(parkingLot.TwoWheelersList) == twoWheelerSlots)
                                             {
-                                                _injector.Unpark(parkingLot.TwoWheelersList, parkingLot.TwoWheelerObjectList, unparkSlot);
-                                                _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                                Console.WriteLine("\n No Vehicles to Unpark!");
+                                                Console.WriteLine("\n");
                                             }
-                                            catch (Exception)
+                                            else
                                             {
-                                                Console.WriteLine("Sorry! No such Slot!\n");
-                                            }
+                                                Console.WriteLine("Enter Slot Number:");
+                                                int unparkSlot = Convert.ToInt32(Console.ReadLine());
+                                                try
+                                                {
+                                                    _injector.Unpark(parkingLot.TwoWheelersList, parkingLot.TwoWheelerObjectList, unparkSlot);
+                                                    _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    Console.WriteLine("Sorry! No such Slot!\n");
+                                                }
+                                            } 
                                         }
                                         break;
 
                                     case 2:
-                                        if (_injector.numberOfVacancies(parkingLot.FourWheelersList) == fourWheelerSlots)
+                                        if (fourWheelerSlots == 0)
                                         {
-                                            Console.WriteLine("\n No Vehicles to Unpark!");
-                                            Console.WriteLine("\n");
+                                            Console.WriteLine("\nNo Four Wheeler slots!\n");
                                         }
                                         else
                                         {
-                                            Console.WriteLine("Enter Slot Number:");
-                                            int unparkSlot = Convert.ToInt32(Console.ReadLine());
-                                            try
+                                            if (_injector.numberOfVacancies(parkingLot.FourWheelersList) == fourWheelerSlots)
                                             {
-                                                _injector.Unpark(parkingLot.FourWheelersList, parkingLot.FourWheelerObjectList, unparkSlot);
-                                                _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                                Console.WriteLine("\n No Vehicles to Unpark!");
+                                                Console.WriteLine("\n");
                                             }
-                                            catch (Exception)
+                                            else
                                             {
-                                                Console.WriteLine("Sorry! No such Slot!\n");
-                                            }
+                                                Console.WriteLine("Enter Slot Number:");
+                                                int unparkSlot = Convert.ToInt32(Console.ReadLine());
+                                                try
+                                                {
+                                                    _injector.Unpark(parkingLot.FourWheelersList, parkingLot.FourWheelerObjectList, unparkSlot);
+                                                    _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    Console.WriteLine("Sorry! No such Slot!\n");
+                                                }
+                                            } 
                                         }
                                         break;
 
                                     case 3:
-                                        if (_injector.numberOfVacancies(parkingLot.HeavyVehicleList) == heavyVehicleSlots)
+                                        if (heavyVehicleSlots == 0)
                                         {
-                                            Console.WriteLine("\n No Vehicles to Unpark!");
-                                            Console.WriteLine("\n");
+                                            Console.WriteLine("\nNo Heavy Vehicle slots!\n");
                                         }
                                         else
                                         {
-                                            Console.WriteLine("Enter Slot Number:");
-                                            int unparkSlot = Convert.ToInt32(Console.ReadLine());
-                                            try
+                                            if (_injector.numberOfVacancies(parkingLot.HeavyVehicleList) == heavyVehicleSlots)
                                             {
-                                                _injector.Unpark(parkingLot.HeavyVehicleList, parkingLot.HeavyVehicleObjectList, unparkSlot);
-                                                _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                                Console.WriteLine("\n No Vehicles to Unpark!");
+                                                Console.WriteLine("\n");
                                             }
-                                            catch (Exception)
+                                            else
                                             {
-                                                Console.WriteLine("Sorry! No such Slot!\n");
-                                            }
+                                                Console.WriteLine("Enter Slot Number:");
+                                                int unparkSlot = Convert.ToInt32(Console.ReadLine());
+                                                try
+                                                {
+                                                    _injector.Unpark(parkingLot.HeavyVehicleList, parkingLot.HeavyVehicleObjectList, unparkSlot);
+                                                    _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    Console.WriteLine("Sorry! No such Slot!\n");
+                                                }
+                                            } 
                                         }
                                         break;
 

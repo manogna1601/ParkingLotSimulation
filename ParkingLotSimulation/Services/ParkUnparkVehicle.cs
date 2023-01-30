@@ -1,4 +1,5 @@
-﻿using ParkingLotSimulation.Interfaces;
+﻿using Newtonsoft.Json;
+using ParkingLotSimulation.Interfaces;
 using ParkingLotSimulation.Models;
 using System;
 using System.Text.Json;
@@ -18,6 +19,33 @@ namespace ParkingLotSimulation.Services
             int estimatedHours = Convert.ToInt32(Console.ReadLine());
             DateTime inTime = DateTime.Now;
             DateTime outTime = inTime.AddHours(estimatedHours);
+
+            /*string filename = "Details.json";
+            string x = File.ReadAllText(filename);
+            Json json = JsonConvert.DeserializeObject<Json>(x);
+            json.TwoWheelers[slot].VehicleNumber = vehicleNumber;
+            json.TwoWheelers[slot].SlotNumber = slot;
+            json.TwoWheelers[slot].InTime = inTime;
+            json.TwoWheelers[slot].OutTime = outTime;
+            for(int i=0; i<objectList.Count; i++)
+            {
+                JsonConvert.SerializeObject(json.TwoWheelers[i]);
+            }
+
+            Console.WriteLine(File.ReadAllText(filename));*/
+
+            /*string filename = "Details.json";
+            string x = File.ReadAllText(filename);
+            Json y = JsonConvert.DeserializeObject<Json>(x);
+            Console.WriteLine(y);
+            y.TwoWheelers[slot].VehicleNumber = vehicleNumber;
+            y.TwoWheelers[slot].SlotNumber = slot;
+            y.TwoWheelers[slot].InTime = inTime;
+            y.TwoWheelers[slot].OutTime = outTime;
+            JsonConvert.SerializeObject(y);
+            File.WriteAllText(filename, y.ToString());
+            Console.WriteLine(File.ReadAllText(filename));*/
+
             ParkingTicket newParkingTicket = new ParkingTicket
             {
                 VehicleNumber = vehicleNumber,
@@ -28,6 +56,9 @@ namespace ParkingLotSimulation.Services
             list[slot] = true;
             objectList[slot] = newParkingTicket;
             IssueTicket(newParkingTicket);
+
+
+            
         }
 
         public void ParkingFull()

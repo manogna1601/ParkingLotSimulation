@@ -1,4 +1,6 @@
-﻿namespace ParkingLotSimulation.Models
+﻿using ParkingLotSimulation.Services;
+
+namespace ParkingLotSimulation.Models
 {
     public class ParkingLot
     {
@@ -11,6 +13,13 @@
         public List<ParkingTicket> TwoWheelerObjectList;
         public List<ParkingTicket> FourWheelerObjectList;
         public List<ParkingTicket> HeavyVehicleObjectList;
+
+        static ParkUnparkVehicle _parkUnparkVehicle = new ParkUnparkVehicle();
+        static ShowOccupancyDetails _showOccupancyDetails = new ShowOccupancyDetails();
+        static HelperService _helperService = new HelperService();
+
+        static Injector _injector = new Injector(_parkUnparkVehicle, _showOccupancyDetails, _helperService);
+
         public ParkingLot(int twoWheelerSlots, int fourWheelerSlots, int heavyVehicleSlots)
         {
             this.TwoWheelerSlots = twoWheelerSlots;
@@ -60,8 +69,8 @@
                 HeavyVehicleObjectList.Add(dummyTicket);
             }
 
+            //_injector.convertToJson(TwoWheelerObjectList, FourWheelerObjectList, HeavyVehicleObjectList);
 
         }
-
     }
 }

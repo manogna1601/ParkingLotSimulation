@@ -8,9 +8,8 @@ public class Program
 {
     static ParkUnparkVehicle _parkUnparkVehicle = new ParkUnparkVehicle();
     static ShowOccupancyDetails _showOccupancyDetails = new ShowOccupancyDetails();
-    static HelperService _helperService = new HelperService();
 
-    static Injector _injector = new Injector(_parkUnparkVehicle, _showOccupancyDetails, _helperService);
+    static Injector _injector = new Injector(_parkUnparkVehicle, _showOccupancyDetails);
     private static void Main(string[] args)
     {
         Console.WriteLine("------------- Initialize your Parking Lot ------------");
@@ -23,6 +22,14 @@ public class Program
 
         ParkingLot parkingLot = new ParkingLot(twoWheelerSlots, fourWheelerSlots, heavyVehicleSlots);
 
+        List<bool> twoWheelersList = new List<bool>(twoWheelerSlots);
+        List<bool> fourWheelersList = new List<bool>(fourWheelerSlots);
+        List<bool> heavyVehicleList = new List<bool>(heavyVehicleSlots);
+
+        List<ParkingTicket> twoWheelerObjectList = new List<ParkingTicket>(twoWheelerSlots);
+        List<ParkingTicket> fourWheelerObjectList = new List<ParkingTicket>(fourWheelerSlots);
+        List<ParkingTicket> heavyVehicleObjectList = new List<ParkingTicket>(heavyVehicleSlots);
+
 
         Console.WriteLine("\n");
         Console.WriteLine("----------------- Parking Lot ------------------ \n");
@@ -30,8 +37,6 @@ public class Program
         Console.WriteLine("Four Wheeler Slots: " + fourWheelerSlots);
         Console.WriteLine("Heavy Vehicle Slots: " + heavyVehicleSlots);
         Console.WriteLine("\n");
-
-        //_injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
 
         bool flag = true;
         while (flag)
@@ -60,27 +65,9 @@ public class Program
                             switch (park)
                             {
                                 case 1:
-                                    if (_injector.numberOfVacancies(parkingLot.TwoWheelersList) != 0)
+                                    if (twoWheelersList.Count != twoWheelerSlots)
                                     {
-                                        int slot = _injector.slotNumber(parkingLot.TwoWheelersList, false);
-                                        //string slotString = "TW-" + Convert.ToString(slot);
-                                        _injector.Park(parkingLot.TwoWheelersList, parkingLot.TwoWheelerObjectList, slot);
-                                        //_injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
-
-
-                                        /*string filename = "Details.json";
-                                        string x = File.ReadAllText(filename);
-                                        Json json = JsonConvert.DeserializeObject<Json>(x);
-                                        Console.WriteLine(json.TwoWheelers);*/
-
-                                        /*string filename = "Details.json";
-                                        string x = File.ReadAllText(filename);
-                                        Json y = JsonConvert.DeserializeObject<Json>(x);
-                                        Console.WriteLine(y);
-                                        y.TwoWheelers[slot]=
-                                        JsonConvert.SerializeObject(y);*/
-                                        
-
+                                        _injector.Park(twoWheelersList, twoWheelerObjectList);
                                     }
                                     else if(twoWheelerSlots == 0)
                                     {
@@ -93,12 +80,9 @@ public class Program
                                     break;
 
                                 case 2:
-                                    if (_injector.numberOfVacancies(parkingLot.FourWheelersList) != 0)
+                                    if (fourWheelersList.Count != fourWheelerSlots)
                                     {
-                                        int slot = _injector.slotNumber(parkingLot.FourWheelersList, false);
-                                        //string slotString = "FW-" + Convert.ToString(slot);
-                                        _injector.Park(parkingLot.FourWheelersList, parkingLot.FourWheelerObjectList, slot);
-                                        _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                        _injector.Park(fourWheelersList, fourWheelerObjectList);
                                     }
                                     else if (fourWheelerSlots == 0)
                                     {
@@ -111,12 +95,9 @@ public class Program
                                     break;
 
                                 case 3:
-                                    if (_injector.numberOfVacancies(parkingLot.HeavyVehicleList) != 0)
+                                    if (heavyVehicleList.Count != heavyVehicleSlots)
                                     {
-                                        int slot = _injector.slotNumber(parkingLot.HeavyVehicleList, false);
-                                        //string slotString = "HV-" + Convert.ToString(slot);
-                                        _injector.Park(parkingLot.HeavyVehicleList, parkingLot.HeavyVehicleObjectList, slot);
-                                        _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                        _injector.Park(heavyVehicleList, heavyVehicleObjectList);
                                     }
                                     else if (heavyVehicleSlots == 0)
                                     {
@@ -140,7 +121,7 @@ public class Program
                         break;
 
                     case 2:
-                        if (_injector.numberOfVacancies(parkingLot.TwoWheelersList) == twoWheelerSlots && _injector.numberOfVacancies(parkingLot.FourWheelersList) == fourWheelerSlots && _injector.numberOfVacancies(parkingLot.HeavyVehicleList) == heavyVehicleSlots)
+                        if (twoWheelersList.Count == 0 && fourWheelersList.Count == 0 && heavyVehicleList.Count == 0)
                         {
                             Console.WriteLine("\n No Vehicles to Unpark!");
                             Console.WriteLine("\n");
@@ -165,7 +146,7 @@ public class Program
                                         }
                                         else
                                         {
-                                            if (_injector.numberOfVacancies(parkingLot.TwoWheelersList) == twoWheelerSlots)
+                                            if (twoWheelersList.Count == 0)
                                             {
                                                 Console.WriteLine("\n No Vehicles to Unpark!");
                                                 Console.WriteLine("\n");
@@ -176,8 +157,7 @@ public class Program
                                                 int unparkSlot = Convert.ToInt32(Console.ReadLine());
                                                 try
                                                 {
-                                                    _injector.Unpark(parkingLot.TwoWheelersList, parkingLot.TwoWheelerObjectList, unparkSlot);
-                                                    _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                                    _injector.Unpark(twoWheelersList, twoWheelerObjectList, unparkSlot);
                                                 }
                                                 catch (Exception)
                                                 {
@@ -194,7 +174,7 @@ public class Program
                                         }
                                         else
                                         {
-                                            if (_injector.numberOfVacancies(parkingLot.FourWheelersList) == fourWheelerSlots)
+                                            if (fourWheelersList.Count == 0)
                                             {
                                                 Console.WriteLine("\n No Vehicles to Unpark!");
                                                 Console.WriteLine("\n");
@@ -205,8 +185,7 @@ public class Program
                                                 int unparkSlot = Convert.ToInt32(Console.ReadLine());
                                                 try
                                                 {
-                                                    _injector.Unpark(parkingLot.FourWheelersList, parkingLot.FourWheelerObjectList, unparkSlot);
-                                                    _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                                    _injector.Unpark(fourWheelersList, fourWheelerObjectList, unparkSlot);
                                                 }
                                                 catch (Exception)
                                                 {
@@ -223,7 +202,7 @@ public class Program
                                         }
                                         else
                                         {
-                                            if (_injector.numberOfVacancies(parkingLot.HeavyVehicleList) == heavyVehicleSlots)
+                                            if (heavyVehicleList.Count == 0)
                                             {
                                                 Console.WriteLine("\n No Vehicles to Unpark!");
                                                 Console.WriteLine("\n");
@@ -234,8 +213,7 @@ public class Program
                                                 int unparkSlot = Convert.ToInt32(Console.ReadLine());
                                                 try
                                                 {
-                                                    _injector.Unpark(parkingLot.HeavyVehicleList, parkingLot.HeavyVehicleObjectList, unparkSlot);
-                                                    _injector.convertToJson(parkingLot.TwoWheelerObjectList, parkingLot.FourWheelerObjectList, parkingLot.HeavyVehicleObjectList);
+                                                    _injector.Unpark(heavyVehicleList, heavyVehicleObjectList, unparkSlot);
                                                 }
                                                 catch (Exception)
                                                 {
@@ -258,7 +236,7 @@ public class Program
                         break;
 
                     case 3:
-                        _injector.ShowDetails(parkingLot);
+                        _injector.ShowDetails(twoWheelersList, fourWheelersList, heavyVehicleList, parkingLot);
                         break;
 
                     case 4:

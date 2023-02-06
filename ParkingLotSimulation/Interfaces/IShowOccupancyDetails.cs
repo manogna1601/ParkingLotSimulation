@@ -4,6 +4,6 @@ namespace ParkingLotSimulation.Interfaces
 {
     public interface IShowOccupancyDetails
     {
-        void ShowDetails(ParkingLot parkingLot);
+        void ShowDetails(List<bool> twoWheelersList, List<bool> fourWheelersList, List<bool> heavyVehicleList, ParkingLot parkingLot);
     }
 }

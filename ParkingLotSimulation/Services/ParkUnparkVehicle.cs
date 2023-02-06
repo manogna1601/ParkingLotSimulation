@@ -3,6 +3,8 @@ using ParkingLotSimulation.Interfaces;
 using ParkingLotSimulation.Models;
 using System;
 using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Transactions;
 using System.Xml;
 
 namespace ParkingLotSimulation.Services
@@ -10,41 +12,50 @@ namespace ParkingLotSimulation.Services
     public class ParkUnparkVehicle : IParkUnparkVehicle
     {
         static string filename = "Details.json";
+        int slot = 0;
 
-        public void Park(List<bool> list, List<ParkingTicket> objectList, int slot)
+        public void Park(List<bool> list, List<ParkingTicket> objectList)
         {
-            Console.WriteLine("Enter Vehicle Number: ");
-            string vehicleNumber = Console.ReadLine();
-            Console.WriteLine("Enter estimated parking time in hours: ");
-            int estimatedHours = Convert.ToInt32(Console.ReadLine());
+            Regex vehicleNumberRegex = new Regex(@"[A-Z][A-Z]-[0-9][0-9]-[A-Z][A-Z]-[0-9][0-9][0-9][0-9]");
+
+            string vehicleNumber;
+
+            Console.WriteLine("Enter Vehicle Number:  Pattern: XX-00-XX-0000");
+            string vehicleNumberInput = Console.ReadLine();
+            while(!vehicleNumberRegex.IsMatch(vehicleNumberInput)) 
+            {
+                Console.WriteLine("Enter Vehicle Number: Pattern: XX-00-XX-0000");
+                vehicleNumberInput = Console.ReadLine();
+            }
+
+            vehicleNumber = vehicleNumberInput;
+
+            bool flag = true;
+
+            int estimatedHours = 0;
+
+            
+
+            while (flag)
+            {
+                Console.WriteLine("Enter estimated parking time in hours: ");
+                try
+                {
+                    int estimatedHoursInput = Convert.ToInt32(Console.ReadLine());
+                    estimatedHours = estimatedHoursInput;
+                    flag = false;
+                }
+                catch (Exception)
+                {
+                    flag = true;
+                } 
+            }
+
             DateTime inTime = DateTime.Now;
             DateTime outTime = inTime.AddHours(estimatedHours);
 
-            /*string filename = "Details.json";
-            string x = File.ReadAllText(filename);
-            Json json = JsonConvert.DeserializeObject<Json>(x);
-            json.TwoWheelers[slot].VehicleNumber = vehicleNumber;
-            json.TwoWheelers[slot].SlotNumber = slot;
-            json.TwoWheelers[slot].InTime = inTime;
-            json.TwoWheelers[slot].OutTime = outTime;
-            for(int i=0; i<objectList.Count; i++)
-            {
-                JsonConvert.SerializeObject(json.TwoWheelers[i]);
-            }
-
-            Console.WriteLine(File.ReadAllText(filename));*/
-
-            /*string filename = "Details.json";
-            string x = File.ReadAllText(filename);
-            Json y = JsonConvert.DeserializeObject<Json>(x);
-            Console.WriteLine(y);
-            y.TwoWheelers[slot].VehicleNumber = vehicleNumber;
-            y.TwoWheelers[slot].SlotNumber = slot;
-            y.TwoWheelers[slot].InTime = inTime;
-            y.TwoWheelers[slot].OutTime = outTime;
-            JsonConvert.SerializeObject(y);
-            File.WriteAllText(filename, y.ToString());
-            Console.WriteLine(File.ReadAllText(filename));*/
+            list.Add(true);
+            this.slot++;
 
             ParkingTicket newParkingTicket = new ParkingTicket
             {
@@ -53,12 +64,11 @@ namespace ParkingLotSimulation.Services
                 InTime = inTime,
                 OutTime = outTime
             };
-            list[slot] = true;
-            objectList[slot] = newParkingTicket;
-            IssueTicket(newParkingTicket);
-
 
             
+            objectList.Add(newParkingTicket);
+
+            IssueTicket(newParkingTicket);
         }
 
         public void ParkingFull()
@@ -69,21 +79,22 @@ namespace ParkingLotSimulation.Services
 
         public void Unpark(List<bool> list, List<ParkingTicket> objectList, int slot)
         {
-            if (list[slot] != false)
+            list.Remove(true);
+            for (int i = 0; i < objectList.Count; i++)
             {
-                list[slot] = false;
-                string penalty = Penalty(objectList[slot].OutTime, DateTime.Now);
-                objectList[slot].OutTime = DateTime.Now;
-                ReturnTicket(objectList[slot], penalty);
-                objectList[slot].VehicleNumber = "";
-                objectList[slot].SlotNumber = -1;
-                objectList[slot].InTime = new DateTime();
-                objectList[slot].OutTime = new DateTime();
+                string penalty = Penalty(objectList[i].OutTime, DateTime.Now);
+                objectList[i].OutTime = DateTime.Now;
+                ReturnTicket(objectList[i], penalty);
+                break;
             }
-            else
-            {
-                Console.WriteLine("\nSlot is Empty!\n");
-            }
+                
+                for (int i=0; i<objectList.Count; i++)
+                {
+                    if (objectList[i].SlotNumber == slot)
+                    {
+                        objectList.Remove(objectList[i]);
+                    }
+                }
         }
 
         public string Penalty(DateTime estimatedTime, DateTime actualTime)

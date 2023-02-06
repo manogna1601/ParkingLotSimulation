@@ -5,15 +5,14 @@ namespace ParkingLotSimulation.Services
 {
     public class ShowOccupancyDetails : IShowOccupancyDetails
     {
-        HelperService _helperService = new HelperService();
-        public void ShowDetails(ParkingLot parkingLot)
+        public void ShowDetails(List<bool> twoWheelersList, List<bool> fourWheelersList, List<bool> heavyVehicleList, ParkingLot parkingLot)
         {
             Console.WriteLine("\n");
             Console.WriteLine("----------------- Parking Lot ------------------");
             Console.WriteLine("\t\t    Free Slots \t Occupied Slots");
-            Console.WriteLine("Two Wheelers: \t\t" + _helperService.numberOfVacancies(parkingLot.TwoWheelersList) + "\t\t" + (parkingLot.TwoWheelerSlots - _helperService.numberOfVacancies(parkingLot.TwoWheelersList)));
-            Console.WriteLine("Four Wheelers: \t\t" + _helperService.numberOfVacancies(parkingLot.FourWheelersList) + "\t\t" + (parkingLot.FourWheelerSlots - _helperService.numberOfVacancies(parkingLot.FourWheelersList)));
-            Console.WriteLine("Heavy Vehicles: \t" + _helperService.numberOfVacancies(parkingLot.HeavyVehicleList) + "\t\t" + (parkingLot.HeavyVehicleSlots - _helperService.numberOfVacancies(parkingLot.HeavyVehicleList)));
+            Console.WriteLine("Two Wheelers: \t\t" + (parkingLot.TwoWheelerSlots - twoWheelersList.Count) + "\t\t" + (twoWheelersList.Count));
+            Console.WriteLine("Four Wheelers: \t\t" + (parkingLot.FourWheelerSlots - fourWheelersList.Count) + "\t\t" + (fourWheelersList.Count));
+            Console.WriteLine("Heavy Vehicles: \t" + (parkingLot.HeavyVehicleSlots - heavyVehicleList.Count) + "\t\t" + (heavyVehicleList.Count));
             Console.WriteLine("\n");
         }
     }

@@ -13,18 +13,17 @@ namespace ParkingLotSimulation
             showOccupancyDetails = _showOccupancyDetails;
         }
 
-        public void Park(List<bool> list, List<ParkingTicket> objectList)
+        public void Park(List<Vehicle> vehicles, int vehicleType, List<Ticket> tickets)
         {
-            this.parkUnparkVehicle.Park(list, objectList);
+            this.parkUnparkVehicle.Park(vehicles, vehicleType, tickets);
         }
         public void ParkingFull()
         {
             this.parkUnparkVehicle.ParkingFull();
         }
-
-        public void Unpark(List<bool> list, List<ParkingTicket> objectList, int slot)
+        public void Unpark(List<Vehicle> vehicles, string unparkVehicle, List<Ticket> tickets)
         {
-            this.parkUnparkVehicle.Unpark(list,objectList, slot);
+            this.parkUnparkVehicle.Unpark(vehicles, unparkVehicle, tickets);
         }
 
         public string Penalty(DateTime estimatedTime, DateTime actualTime)
@@ -32,9 +31,9 @@ namespace ParkingLotSimulation
             return this.parkUnparkVehicle.Penalty(estimatedTime,actualTime);
         }
 
-        public void ShowDetails(List<bool> twoWheelersList, List<bool> fourWheelersList, List<bool> heavyVehicleList, ParkingLot parkingLot)
+        public void ShowDetails(int twoWheelerSlots, int fourWheelerSlots, int heavyVehicleSlots, int filledTwoWheelerSlots, int filledFourWheelerSlots, int filledheavyVehicleSlots)
         {
-            this.showOccupancyDetails.ShowDetails(twoWheelersList, fourWheelersList, heavyVehicleList, parkingLot);
+            this.showOccupancyDetails.ShowDetails(twoWheelerSlots, fourWheelerSlots, heavyVehicleSlots, filledTwoWheelerSlots, filledFourWheelerSlots, filledheavyVehicleSlots);
         }
     }
 }

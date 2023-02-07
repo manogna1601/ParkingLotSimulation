@@ -2,6 +2,7 @@
 using ParkingLotSimulation.Interfaces;
 using ParkingLotSimulation.Models;
 using System;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Transactions;
@@ -11,30 +12,54 @@ namespace ParkingLotSimulation.Services
 {
     public class ParkUnparkVehicle : IParkUnparkVehicle
     {
-        static string filename = "Details.json";
         int slot = 0;
 
-        public void Park(List<bool> list, List<ParkingTicket> objectList)
+        public void Park(List<Vehicle> vehicles, int vehicleType, List<Ticket> tickets)
         {
             Regex vehicleNumberRegex = new Regex(@"[A-Z][A-Z]-[0-9][0-9]-[A-Z][A-Z]-[0-9][0-9][0-9][0-9]");
 
             string vehicleNumber;
 
-            Console.WriteLine("Enter Vehicle Number:  Pattern: XX-00-XX-0000");
+            Console.WriteLine("Enter Vehicle Number: ");
             string vehicleNumberInput = Console.ReadLine();
-            while(!vehicleNumberRegex.IsMatch(vehicleNumberInput)) 
+            while (!vehicleNumberRegex.IsMatch(vehicleNumberInput))
             {
-                Console.WriteLine("Enter Vehicle Number: Pattern: XX-00-XX-0000");
+                Console.WriteLine("Enter valid Vehicle Number: (Pattern: XX-00-XX-0000)");
                 vehicleNumberInput = Console.ReadLine();
             }
 
             vehicleNumber = vehicleNumberInput;
 
+            if (vehicleType == 1)
+            {
+                TwoWheeler newTwoWheeler = new TwoWheeler
+                {
+                    VehicleNumber = vehicleNumber
+                };
+                vehicles.Add(newTwoWheeler);
+            }
+            else if (vehicleType == 2)
+            {
+                FourWheeler newFourWheeler = new FourWheeler
+                {
+                    VehicleNumber = vehicleNumber,
+                    VehicleType = "Four-Wheeler"
+                };
+                vehicles.Add(newFourWheeler);
+            }
+            else
+            {
+                HeavyVehicle newHeavyVehicle = new HeavyVehicle
+                {
+                    VehicleNumber = vehicleNumber,
+                    VehicleType = "Heavy Vehicle"
+                };
+                vehicles.Add(newHeavyVehicle);
+            }
+
             bool flag = true;
 
             int estimatedHours = 0;
-
-            
 
             while (flag)
             {
@@ -45,31 +70,26 @@ namespace ParkingLotSimulation.Services
                     estimatedHours = estimatedHoursInput;
                     flag = false;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     flag = true;
-                } 
+                    Console.WriteLine(ex.Message);
+                }
             }
 
-            DateTime inTime = DateTime.Now;
-            DateTime outTime = inTime.AddHours(estimatedHours);
-
-            list.Add(true);
-            this.slot++;
-
-            ParkingTicket newParkingTicket = new ParkingTicket
+            Ticket newTicket = new Ticket()
             {
-                VehicleNumber = vehicleNumber,
-                SlotNumber = slot,
-                InTime = inTime,
-                OutTime = outTime
+                SlotNumber = slot++,
+                InTime = DateTime.Now,
+                OutTime = DateTime.Now.AddHours(estimatedHours)
             };
 
-            
-            objectList.Add(newParkingTicket);
+            tickets.Add(newTicket);
 
-            IssueTicket(newParkingTicket);
+            IssueTicket(vehicles[vehicles.Count-1],newTicket);
         }
+
+        
 
         public void ParkingFull()
         {
@@ -77,25 +97,29 @@ namespace ParkingLotSimulation.Services
             Console.WriteLine("\n");
         }
 
-        public void Unpark(List<bool> list, List<ParkingTicket> objectList, int slot)
+        public void Unpark(List<Vehicle> vehicles, string unparkVehicle, List<Ticket> tickets)
         {
-            list.Remove(true);
-            for (int i = 0; i < objectList.Count; i++)
+            bool flag = false;
+            
+            for (int i = 0; i < vehicles.Count; i++)
             {
-                string penalty = Penalty(objectList[i].OutTime, DateTime.Now);
-                objectList[i].OutTime = DateTime.Now;
-                ReturnTicket(objectList[i], penalty);
-                break;
-            }
-                
-                for (int i=0; i<objectList.Count; i++)
+                if (vehicles[i].VehicleNumber == unparkVehicle)
                 {
-                    if (objectList[i].SlotNumber == slot)
-                    {
-                        objectList.Remove(objectList[i]);
-                    }
+                    string penalty = Penalty(tickets[i].OutTime, DateTime.Now);
+                    tickets[i].OutTime = DateTime.Now;
+                    ReturnTicket(tickets[i], penalty, vehicles[i]);
+                    vehicles.RemoveAt(i);
+                    flag = true;
+                    break;
                 }
+            }
+            if (!flag)
+            {
+                Console.WriteLine("\nNo such Slot!\n");
+            }
         }
+
+        
 
         public string Penalty(DateTime estimatedTime, DateTime actualTime)
         {
@@ -110,21 +134,22 @@ namespace ParkingLotSimulation.Services
                 return penatly;
             }
         }
-        public void IssueTicket(ParkingTicket ticket)
+
+        public void IssueTicket(Vehicle vehicle, Ticket ticket)
         {
             Console.WriteLine("\n");
-            Console.WriteLine("Vehicle Number: " + ticket.VehicleNumber);
-            Console.WriteLine("Slot Number: " + ticket.SlotNumber);
+            Console.WriteLine("****** Parking Ticket ******\n");
+            Console.WriteLine("Vehicle Number: " + vehicle.VehicleNumber);
+            Console.WriteLine("SLot Number: " + ticket.SlotNumber);
             Console.WriteLine("In-Time: " + ticket.InTime);
             Console.WriteLine("Estimated Out-Time: " + ticket.OutTime);
             Console.WriteLine("\n");
-            Console.WriteLine("Token Issued!");
-            Console.WriteLine("\n");
         }
-        public void ReturnTicket(ParkingTicket ticket, string penalty)
+
+        public void ReturnTicket(Ticket ticket, string penalty, Vehicle vehicle)
         {
             Console.WriteLine("\n");
-            Console.WriteLine("Vehicle Number: " + ticket.VehicleNumber);
+            Console.WriteLine("Vehicle Number: " + vehicle.VehicleNumber);
             Console.WriteLine("Slot Number: " + ticket.SlotNumber);
             Console.WriteLine("In-Time: " + ticket.InTime);
             Console.WriteLine("Out-Time: " + ticket.OutTime);

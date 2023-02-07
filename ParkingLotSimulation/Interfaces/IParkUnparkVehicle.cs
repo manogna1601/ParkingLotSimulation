@@ -4,9 +4,9 @@ namespace ParkingLotSimulation.Interfaces
 {
     public interface IParkUnparkVehicle
     {
-        void Park(List<bool> list, List<ParkingTicket> objectList);
+        void Park(List<Vehicle> vehicles, int vehicleType, List<Ticket> tickets);
         void ParkingFull();
-        void Unpark(List<bool> list, List<ParkingTicket> objectList, int slot);
+        void Unpark(List<Vehicle> vehicles, string unparkVehicle, List<Ticket> tickets);
         string Penalty(DateTime estimatedTime, DateTime actualTime);
     }
 }
